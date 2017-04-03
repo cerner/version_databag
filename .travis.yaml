@@ -1,0 +1,7 @@
+language: ruby
+bundler_args: --without release
+cache: bundler
+sudo: false
+script:
+  - bundle exec rspec
+  - bundle exec foodcritic . -f any

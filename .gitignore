@@ -1,0 +1,16 @@
+.vagrant
+/cookbooks
+
+# Bundler
+bin/*
+.bundle/*
+
+.rigm*
+rigm*
+
+.kitchen/
+.kitchen.local.yml
+
+.DS_Store
+*.lock
+target/*

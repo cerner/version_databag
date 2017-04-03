@@ -6,4 +6,7 @@ description 'Dynamically retrieve artifact versions from a data bag'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 issues_url 'https://github.com/cerner/version_databag/issues'
 source_url 'https://github.com/cerner/version_databag'
+chef_version '~> 12.3'
+supports 'centos'
+supports 'ubuntu'
 version '1.0'

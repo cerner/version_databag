@@ -9,5 +9,5 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
   config.platform = 'redhat'
-  config.version = '6.5'
+  config.version = '7.8'
 end

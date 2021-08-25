@@ -2,7 +2,7 @@ def whyrun_supported?
   true
 end
 
-use_inline_resources
+use_inline_resources # ~FC113
 
 action :resolve do
   artifact_name = @new_resource.artifact_name

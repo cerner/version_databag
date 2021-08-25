@@ -3,9 +3,9 @@ require 'spec_helper'
 describe 'version_databag::attrib_interpolate' do
   let(:runner) do
     ChefSpec::SoloRunner.new(step_into) do |node|
-      node.set['version_databag']['databag'] = databag
-      node.set['version_databag']['databag_item'] = databag_item
-      node.set['version_databag']['artifact_specifications'] = [
+      node.override['version_databag']['databag'] = databag
+      node.override['version_databag']['databag_item'] = databag_item
+      node.override['version_databag']['artifact_specifications'] = [
       {
         'artifact_name' => 'Artifact1',
         'attribute_path' => "['application_cookbook']['version']"
@@ -65,7 +65,7 @@ describe 'version_databag::attrib_interpolate' do
       }
 
       before do
-        runner.node.set['version_databag']['artifact_specifications'] = [artifact_spec]
+        runner.node.override['version_databag']['artifact_specifications'] = [artifact_spec]
       end
 
       context 'when stepping in the resource' do
@@ -88,7 +88,7 @@ describe 'version_databag::attrib_interpolate' do
       artifact_override_map = {"Artifact1" => "missing"}
 
       it 'fails to retrieve the version' do
-        runner.node.set['version_databag']['artifact_override_map'] = artifact_override_map
+        runner.node.override['version_databag']['artifact_override_map'] = artifact_override_map
         expect{chef_run}.to raise_error(RuntimeError,
             /version_type #{artifact_override_map.values[0]} is missing for #{artifact_override_map.keys[0]}/)
       end
@@ -96,7 +96,7 @@ describe 'version_databag::attrib_interpolate' do
 
     context 'when there is a valid type override' do
       it 'honors both the override and the version type' do
-        runner.node.set['version_databag']['artifact_override_map'] = {"Artifact3" => "snapshot"}
+        runner.node.override['version_databag']['artifact_override_map'] = {"Artifact3" => "snapshot"}
         expect(chef_run.node['application_cookbook']['version']).to eql('3.17')
         expect(chef_run.node['reference_git']['item']).to eql(
           'https://raw.githubusercontent.com/cerner/version_databag/1.0/README.md')
@@ -108,7 +108,7 @@ describe 'version_databag::attrib_interpolate' do
   describe '#substitute_value' do
     context 'when the delimiter is misconfigured' do
       it 'fails to substitute the value' do
-        runner.node.set['version_databag']['delimiter'] = '<|>'
+        runner.node.override['version_databag']['delimiter'] = '<|>'
         expect{chef_run}.to raise_error(RuntimeError,
           /\['version_databag'\]\['delimiter'\] must be one or two characters to delimit the artifact_name/)
       end
@@ -121,7 +121,7 @@ describe 'version_databag::attrib_interpolate' do
           'value_substitution' => "https://raw.githubusercontent.com/cerner/version_databag/Artifact2/README.md",
           'attribute_path' => "['reference_git']['item']"
         }
-        runner.node.set['version_databag']['artifact_specifications'] = [artifact_spec]
+        runner.node.override['version_databag']['artifact_specifications'] = [artifact_spec]
 
         expect{chef_run}.to raise_error(RuntimeError,
           /The delimited artifact_name must be included in the value substitution: <#{artifact_spec['artifact_name']}>/)
@@ -130,13 +130,13 @@ describe 'version_databag::attrib_interpolate' do
 
     context 'when the delimiter is a single character' do
       it 'delimits by that character' do
-        runner.node.set['version_databag']['delimiter'] = '|'
+        runner.node.override['version_databag']['delimiter'] = '|'
         artifact_spec = {
           'artifact_name' => 'Artifact2',
           'value_substitution' => "https://raw.githubusercontent.com/cerner/version_databag/|Artifact2|/README.md",
           'attribute_path' => "['reference_git']['item']"
         }
-        runner.node.set['version_databag']['artifact_specifications'] = [artifact_spec]
+        runner.node.override['version_databag']['artifact_specifications'] = [artifact_spec]
         expect{chef_run}.to_not raise_error
       end
     end
@@ -148,7 +148,7 @@ describe 'version_databag::attrib_interpolate' do
           'value_substitution' => "https://raw.githubusercontent.com/cerner/version_databag/<Artifact2>/README-<Artifact2>.md",
           'attribute_path' => "['reference_git']['item']"
         }
-        runner.node.set['version_databag']['artifact_specifications'] = [artifact_spec]
+        runner.node.override['version_databag']['artifact_specifications'] = [artifact_spec]
 
         expect(chef_run.node['reference_git']['item']).to eql(
           'https://raw.githubusercontent.com/cerner/version_databag/1.0/README-1.0.md')
@@ -159,14 +159,14 @@ describe 'version_databag::attrib_interpolate' do
   describe '#set_attribute' do
     context 'when only the beginning of the attribute path exists' do
       it 'populates the attribute' do
-        runner.node.set['application_cookbook'] = {}
+        runner.node.override['application_cookbook'] = {}
         expect(chef_run.node['application_cookbook']['version']).to eql('3.17')
       end
     end
 
     context 'when the full attribute path exists' do
       it 'does not populate the attribute' do
-        runner.node.set['application_cookbook']['version'] = '4.3.2'
+        runner.node.override['application_cookbook']['version'] = '4.3.2'
         expect(chef_run.node['application_cookbook']['version']).to eql('4.3.2')
       end
     end

@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'berkshelf', '~> 4.0'
-gem 'chef', '~> 12.3'
-gem 'chefspec', '~> 4.2'
-gem 'rspec', '~> 3.0'
+gem 'berkshelf'
+gem 'chef', '>= 12.0'
+gem 'chefspec'
 gem 'foodcritic'
 gem 'rdoc'
+gem 'rspec'

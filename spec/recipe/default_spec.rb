@@ -8,7 +8,7 @@ describe 'version_databag::default' do
   let(:databag_item) {'versions'}
 
   let(:set_databag_attributes) do
-    runner.node.set['version_databag'] = {
+    runner.node.override['version_databag'] = {
       'databag' => databag,
       'databag_item' => databag_item
     }
@@ -34,7 +34,7 @@ describe 'version_databag::default' do
           'attribute_path' => "['reference_git']['item']"
         }
       ]
-      runner.node.set['version_databag']['artifact_specifications'] = artifact_specifications
+      runner.node.override['version_databag']['artifact_specifications'] = artifact_specifications
 
       artifact_specifications.each_with_index do |artifact_spec, index|
         expect(chef_run).to write_log(
@@ -54,7 +54,7 @@ describe 'version_databag::default' do
           'attribute_path' => "['reference_git']['item']"
         }
       ]
-      runner.node.set['version_databag']['artifact_specifications'] = artifact_specifications
+      runner.node.override['version_databag']['artifact_specifications'] = artifact_specifications
 
       artifact_specifications.each do |artifact_spec|
         expect(chef_run).to resolve_version_databag_attrib_interpolate(
